@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { getAllFairytaleSlugs, getFairytale } from 'lib/sanity.client'
+import { urlForImage } from 'lib/sanity.image'
 import { iFairytale } from 'lib/sanity.queries'
 import { GetStaticProps } from 'next'
 import Image from 'next/image'
@@ -15,13 +16,15 @@ interface Query {
 
 const FairtalePage = ({ fairytale }: PageProps) => {
   // destructure the fairytale object
-  const { title, content } = fairytale
+  const { title, content, coverImage, generateText } = fairytale
+  console.log(fairytale);
 
   const [storyImage, setStoryImage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const prompt = `I am a heart.`
+
 
   const generateNewStoryImage = async () => {
+    const prompt = `et eventyr om ${title}`
     try {
       setIsLoading(true);
       const response = await fetch('/api/openai-image', {
@@ -69,6 +72,8 @@ const FairtalePage = ({ fairytale }: PageProps) => {
       {isLoading && <p>Loading...</p>}
 
       {storyImage && <Image src={storyImage} alt="" width={256} height={256} />}
+
+      <div>{generateText}</div>
     </main>
   )
 }
