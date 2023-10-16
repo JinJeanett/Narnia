@@ -1,7 +1,10 @@
 import { BlockContentIcon } from '@sanity/icons'
 import { Button, Card, Flex, Label, Spinner, Text, TextArea } from '@sanity/ui'
+import { ca } from 'date-fns/locale'
 import { useState } from 'react'
-import { set, StringInputProps, unset } from 'sanity'
+import { StringInputProps, set } from 'sanity'
+import openai from 'openai'
+
 
 // const maxLength = 200
 
@@ -11,7 +14,10 @@ const OpenAISanity = (props: StringInputProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [promt, setPromt] = useState('')
 
+
   const callApi = async () => {
+
+  
     /**
      * write code to fetch data from '/api/openai'
      * and then feed the response text to onChange function
@@ -31,11 +37,40 @@ const OpenAISanity = (props: StringInputProps) => {
     /**
      * See code example on landing page
      */
-    alert('You need to implement this function')
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('/api/openai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: "Your job is to create a modernised version of the fairytale input: " + promt }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+    
+      const data = await response.json();
+    
+      if (data && data.text) {
+        onChange(set(data.text));
+      }
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   const generateStory = async () => {
     // Here you can call the function callApi() you just wrote and handle some errors
+    try {
+      callApi();
+    } catch (error) {
+     alert("An error occured");
+    }
   }
 
   return (
