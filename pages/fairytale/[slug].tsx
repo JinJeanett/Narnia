@@ -15,25 +15,48 @@ interface Query {
 
 const FairtalePage = ({ fairytale }: PageProps) => {
   // destructure the fairytale object
-  const { title } = fairytale
+  const { title, content } = fairytale
 
   const [storyImage, setStoryImage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const prompt = `I am a heart.`
 
   const generateNewStoryImage = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/openai-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.text) {
+          setStoryImage(data.text);
+        } else {
+          console.error('Response did not contain a text property.');
+        }
+      }
+    } catch (error) {
+      console.error('Error while generating image:', error);
+    } finally {
+      setIsLoading(false);
+    }
+
     // Use a try catch to fetch an image from the endpoint ‘/api/openai-image’
     // The endpoint expects a POST request with a JSON body containing a prompt (imagePrompt)
     // The response is a JSON object with a text property
     // Set the storyImage state to the text property of the response object
     // If the response object does not have a text property, log an error to the console
 
-    const prompt = `I am a placeholder prompt, I should be replaced with something more interesting`
   }
-
   const handleGenerateImage = async () => {
+    generateNewStoryImage()
+
     // Add your code here
   }
-
   return (
     <main className="p-10">
       <h1>{title}</h1>
@@ -49,6 +72,8 @@ const FairtalePage = ({ fairytale }: PageProps) => {
     </main>
   )
 }
+
+
 
 export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
   // Get the slug from the context
@@ -85,3 +110,12 @@ export const getStaticPaths = async () => {
 }
 
 export default FairtalePage
+
+
+
+
+
+
+
+
+
