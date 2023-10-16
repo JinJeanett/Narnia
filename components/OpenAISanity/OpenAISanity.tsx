@@ -45,7 +45,12 @@ const OpenAISanity = (props: StringInputProps) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: "Your job is to create a modernised version of the fairytale input: " + promt }),
+        body: JSON.stringify({ prompt: `Your task is to reimagine a classic fairytale in a contemporary setting. Consider the following guidelines:
+        - Place the story in a modern-day context, such as a city or a digital landscape.
+        - Update the characters' roles to reflect today's professions or societal roles.
+        - Integrate modern technology or trends into the storyline.
+        - Provide a unique twist or element that differentiates this version from traditional renditions.
+        Begin your modernized version of: ` + promt }),
       });
 
       if (!response.ok) {
