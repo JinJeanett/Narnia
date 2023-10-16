@@ -24,7 +24,7 @@ const FairtalePage = ({ fairytale }: PageProps) => {
 
 
   const generateNewStoryImage = async () => {
-    const prompt = `et eventyr om ${title}`
+    const prompt = `Oil paining, Cover image for the fairy tale: ${title}`
     try {
       setIsLoading(true);
       const response = await fetch('/api/openai-image', {
